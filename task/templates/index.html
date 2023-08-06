@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    Welcome to our Places App
+{% endblock %}
+
+{% block place_list %}
+    {% for place in places %}
+        <li>{{ place.name }}</li>
+    {% endfor %}
+{% endblock %}

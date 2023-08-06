@@ -147,6 +147,6 @@ LEAFLET_CONFIG = {
 
 "SCALE" : "both",
 
-"ATTRIBUTION_PREFIX" : "My Custome Leaflet map"
+"ATTRIBUTION_PREFIX" : "Places map"
 
 }

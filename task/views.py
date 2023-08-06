@@ -23,7 +23,18 @@ class Home(generic.ListView):
     model = Place
     context_object_name = 'places'
     queryset = Place.objects.annotate(distance=Distance('location', my_location)).order_by('distance')[0:6]
-    template_name = 'home.html'
+    template_name = 'index.html'
+
+
+def search(request):
+    if request.method == 'POST':
+        searched = request.POST['searched']
+        places = Place.objects.filter(name__contains=searched) | Place.objects.filter( description__contains=searched)
+        #description = Place.objects.filter(description__contains=searched)
+
+        return render(request, 'search.html', {'searched': searched, 'places': places})
+    else:
+        return render(request, 'search.html', {})
 
 
 #places_datasets : this uses the serializer to convert the data “Myplaces.objects.all()” to “geojson” data

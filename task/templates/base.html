@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+{% load leaflet_tags %}
+{% load static %}
+{% leaflet_js %}
+{% leaflet_css %}
+
+<html lang="en">
+<head>
+    <script src="{% static 'leaflet.ajax.js' %}" charset="utf-8"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Place{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Places App</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <form class="d-flex" method="POST" action="{% url 'search' %}">
+                    {% csrf_token %}
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="searched">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+        <h1 class="mt-4">{% block heading %}Places{% endblock %}</h1>
+        <ul>
+            {% block place_list %}
+            {% endblock %}
+        </ul>
+        <div id="map" style="height: 400px;"></div>
+    </div>
+
+    <script type="text/javascript">
+        function place_pos(map, options){
+            var dataset = new L.GeoJSON.AJAX("{% url 'places' %}", {
+                onEachFeature: function(feature, layer){
+                    layer.bindPopup(feature.properties.name);
+                }
+            });
+            dataset.addTo(map);
+        }
+    </script>
+    {% block scripts %}
+    <script src="{% static 'main.js' %}"></script>
+    {% leaflet_map "map" callback="window.place_pos" %}
+    {% endblock %}
+</body>
+</html>
